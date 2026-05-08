@@ -1,5 +1,5 @@
 {
-    "name": "php-mcp/server",
+    "name": "reactphp-x/mcp-server",
     "description": "PHP SDK for building Model Context Protocol (MCP) servers - Create MCP tools, resources, and prompts",
     "keywords": [
         "mcp",
