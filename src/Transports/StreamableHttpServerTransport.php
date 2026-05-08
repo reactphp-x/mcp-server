@@ -477,13 +477,13 @@ class StreamableHttpServerTransport implements ServerTransportInterface, LoggerA
                 $sentCountThisCall = 0;
 
                 if ($message instanceof Response || $message instanceof Error) {
-                    $json = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    $json = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
                     $eventId = $this->eventStore ? $this->eventStore->storeEvent($streamId, $json) : null;
                     $this->sendSseEventToStream($stream, $json, $eventId);
                     $sentCountThisCall = 1;
                 } elseif ($message instanceof BatchResponse) {
                     foreach ($message->getAll() as $singleResponse) {
-                        $json = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                        $json = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
                         $eventId = $this->eventStore ? $this->eventStore->storeEvent($streamId, $json) : null;
                         $this->sendSseEventToStream($stream, $json, $eventId);
                         $sentCountThisCall++;
@@ -516,7 +516,7 @@ class StreamableHttpServerTransport implements ServerTransportInterface, LoggerA
                 $deferred = $this->pendingRequests[$pendingRequestId];
                 unset($this->pendingRequests[$pendingRequestId]);
 
-                $responseBody = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $responseBody = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
                 $headers = ['Content-Type' => 'application/json'];
                 if ($isInitializeResponse && !$this->stateless) {
                     $headers['Mcp-Session-Id'] = $sessionId;
@@ -544,7 +544,7 @@ class StreamableHttpServerTransport implements ServerTransportInterface, LoggerA
                     return reject(new TransportException("GET SSE stream not writable."));
                 }
                 if ($message instanceof Response || $message instanceof Error) {
-                    $json = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    $json = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
                     $eventId = $this->eventStore ? $this->eventStore->storeEvent('GET_STREAM', $json) : null;
                     $this->sendSseEventToStream($this->getStream, $json, $eventId);
                 } elseif ($message instanceof BatchResponse) {
